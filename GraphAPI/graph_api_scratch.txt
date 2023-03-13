@@ -1,0 +1,27 @@
+Alerts
+https://graph.microsoft.com/v1.0/security/alerts?$count=true&$filter=eventDateTime+ge+{start_time}+AND+vendorInformation/provider+eq+'{provider}'&$orderby=eventDateTime+asc&$top={items_per_vendor_request}
+
+Secure scores
+https://graph.microsoft.com/v1.0/security/secureScores?$count=true&$filter=createdDateTime+ge+{start_time}+AND+vendorInformation/provider+eq+'{provider}'&$orderby=createdDateTime+asc,vendorInformation/provider+asc&$top={items_per_vendor_request}
+
+Secure score control profiles
+https://graph.microsoft.com/v1.0/security/secureScoreControlProfiles?$count=true
+
+Directory audit
+https://graph.microsoft.com/v1.0/auditLogs/directoryAudits?$filter=activityDateTime ge {start_time}&$orderby=activityDateTime+asc&$top={items_per_main_request}
+
+Provisioning
+https://graph.microsoft.com/beta/auditLogs/provisioning?$filter=activityDateTime ge {start_time}&$orderby=activityDateTime+asc&$top={items_per_main_request}
+
+Sign-in
+signIn
+https://graph.microsoft.com/v1.0/auditLogs/signIns?$orderby=createdDateTime+asc&$top={items_per_main_request}
+
+signIn_nonInteractive
+https://graph.microsoft.com/beta/auditLogs/signIns?&$filter=signInEventTypes/any(x:x eq 'nonInteractiveUser')&$orderby=createdDateTime+asc&$top={items_per_main_request}
+
+signIn_servicePrincipal
+https://graph.microsoft.com/beta/auditLogs/signIns?&$filter=signInEventTypes/any(x:x eq 'servicePrincipal')&$orderby=createdDateTime+asc&$top={items_per_main_request}
+
+signIn_managedIdentity
+https://graph.microsoft.com/beta/auditLogs/signIns?&$filter=signInEventTypes/any(x:x eq 'managedIdentity')&$orderby=createdDateTime+asc&$top={items_per_main_request}

@@ -1,0 +1,70 @@
+// Advanced threat hunting
+// https://security.microsoft.com/v2/advanced-hunting?tid=422fd0e6-1f7a-4ff7-a140-5fce30c268d6
+
+// https://portal.azure.com/#view/Microsoft_Azure_Monitoring_Logs/DemoLogsBlade
+// Get Data | Parse | Filter | Summarize | Sort | Select
+
+SigninLogs                              // Get data
+| evaluate bag_unpack(LocationDetails)
+| where TimeGenerated >= ago(7d)        // Filter
+   and RiskLevelDuringSignIn == 'none'  // Filter
+| summarize Count = count() by city     // Summarize
+| order by Count desc                   // Sort
+| limit 5
+
+// The top operator allows us to combine the sort and take operations into a single.
+// If you're only sorting on one field, use top, as it provides better performance than the combination of sort and take.
+SigninLogs
+| top 5 by TimeGenerated desc
+
+// If you need to sort on more than one field, top can't do that, so you must use sort and take.
+SigninLogs
+| sort by TimeGenerated, Identity desc
+| take 5
+
+// summarize
+Perf
+| project ObjectName, CounterValue , CounterName
+| summarize Count = count(), CounterSum = sum(CounterValue) by CounterName, ObjectName
+| sort by ObjectName asc
+
+// extend
+Usage
+| where QuantityUnit == 'MBytes'
+| extend KBytes = Quantity * 1024
+| project ResourceUri, MBytes=Quantity, KBytes
+
+Usage
+| where QuantityUnit == 'MBytes'
+| extend KBytes = Quantity * 1024
+| extend Bytes = KBytes * 1024
+| project ResourceUri, MBytes=Quantity, KBytes, Bytes
+
+// union
+OfficeActivity
+| union withsource = SourceTable kind = inner SecurityEvent
+
+// join
+// It's a best practice to have your smallest table on the left.
+// In some cases, following this rule can give you huge performance benefits, depending on the types of joins you are performing and the size of the tables.
+OfficeActivity
+| where TimeGenerated >= ago(1d)
+    and LogonUserSid != ''
+| join kind = inner (
+    SecurityEvent
+    | where TimeGenerated >= ago(1d)
+        and SubjectUserSid != ''
+) on $left.LogonUserSid == $right.SubjectUserSid
+
+// evaluate
+SigninLogs
+| evaluate bag_unpack(LocationDetails)
+| limit 5
+
+// let
+let aWeekAgo = ago(7d);
+let getSignins = SigninLogs
+| where TimeGenerated >= aWeekAgo;
+getSignins
+| where level >= 3
+| project IPAddress, UserDisplayName, Level

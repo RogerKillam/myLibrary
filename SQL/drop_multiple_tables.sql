@@ -22,5 +22,3 @@ END
 
 CLOSE tableCursor 
 DEALLOCATE tableCursor
-
---

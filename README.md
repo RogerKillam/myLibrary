@@ -1,6 +1,2 @@
-# myLibrary
-This repository is a catchall bucket of code snippets.
-- Microsoft SQL
-- KQL
-- GraphAPI
-- PowerShell
+# Portfolio Repository
+[Roger Killam](https://www.linkedin.com/in/rkill/)
